@@ -1,0 +1,17 @@
+59379e14f767c49a30977c6caddb70bd *DESCRIPTION
+7a2ddb4623b93d1b88f2b8a15d029e83 *NAMESPACE
+170e8ecf25544845f27546ad7e39a0ef *R/distributions_genlogis.R
+4e7d3450a3070226945159392972c09a *R/distributions_genlogis_as.R
+b4c55aa86584d832cd13fd6fdb8211ed *R/genlog_simu.R
+0b77aebc2af2b1581e3ee133862aaeb0 *R/genlogis_likehood.R
+bcbdf0abac03d7265db810721f3f32d1 *R/genlogis_likehood_as.R
+0d5bb433f4c062675befc9cab887a5c4 *R/likeli_grad.R
+5fa15ede11669ba401a1fe37b584106c *R/optim_genlogis.R
+9ed881b40a539562ad6bfbab4c15b1a7 *R/slider_genlogis.R
+32d0c6ffa46bfaba6ec7888a77d71973 *man/distrib.Rd
+4774af1e859d5f1b3e0b0302a43c506e *man/distrib_as.Rd
+8bdadda9116ba793d17cbd4b9a23f3c7 *man/genlog_mle.Rd
+ac1c24e5af1d423f15e3a85c88e51754 *man/genlog_mle_as.Rd
+453ba9ce0cc1ec5f4e5d2bbeae62b778 *man/genlog_simu.Rd
+28fc56bab954887f374f6728a1d74899 *man/genlog_simu_as.Rd
+e82ac8a843515dd70a8ecef6a0e4bf5a *man/genlog_slider.Rd
