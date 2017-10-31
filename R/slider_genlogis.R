@@ -3,7 +3,7 @@
 #' Make a generalized logistic distribution slider to compare histogram with theoretical distribution
 #' @param data vector of data to compare.
 #' @param return_var a char string to name where parameters are assigned
-#' @param loc_range a number to setup the minimum and maximum range value of the mu parameter
+#' @param mu_range a number to setup the minimum and maximum range value of the mu parameter
 #' @param skew logical, if \code{TRUE}, a model with skewness should be used..
 #' @keywords genlogis
 #' 
@@ -17,7 +17,7 @@
 #' 
 #' @usage 
 #' 
-#' genlog_slider(data, return_var = NULL, loc_range = 10, skew = F)
+#' genlog_slider(data, return_var = NULL, mu_range = 10, skew = F)
 #' 
 #' 
 #' @return 
@@ -37,7 +37,7 @@
 #' The used distribution for is given by: 
 #' \deqn{f(x) = 2*((a + b*(1+p)*(abs(x-mu)^p))*exp(-(x-mu)*(a+b*(abs(x-mu)^p))))/ 
 #'    ((exp(-(x-mu)*(a + b* (abs(x-mu)^p)))+1)^2) *
-#'    ((exp(-(skew*(x-mu))*(a+b*(abs(skew*(x-mu))^p)))+1)^(-1)) }#' for more information about the model (\code{help(dgenlog_as)})
+#'    ((exp(-(skew*(x-mu))*(a+b*(abs(skew*(x-mu))^p)))+1)^(-1)) }#' for more information about the model (\code{help(dgenlog_sk)})
 #' If the density function is not printed it is not defined for these parameters. \cr 
 #' 
 #' \code{help(dgenlog)} for parameters restrictions.\cr 
@@ -53,7 +53,7 @@
 #' Azzalini, A. (1985) \emph{A class of distributions which includes the normal ones}. Scandinavian Journal of Statistics.
 
 
-genlog_slider <- function(data, return_var = NULL, loc_range = 10, skew = F){
+genlog_slider <- function(data, return_var = NULL, mu_range = 10, skew = F){
 
  par_a = par_b = par_p = par_mu = returnval = binw = ..density.. = ..count.. = par_skew = NULL  
  par_mu1 <- mean(data)
@@ -82,21 +82,26 @@ if(skew == F){
     ggplot2::ggplot(data = data, ggplot2::aes(x = data)) +
       ggplot2::theme_bw()+
       ggplot2::geom_histogram(binwidth = binw,
-                              colour = 'black', ggplot2::aes(y = ..density.., fill =..count..))+
+                              color = 'black', ggplot2::aes(y = ..density.., fill =..count..))+
+      ggplot2::geom_density(aes(color = 'Data\nEmpirical Density'), size = 1)+
       ggplot2::scale_fill_gradient("Count", low="#DCDCDC", high="#7C7C7C")+
       ggplot2::stat_function(fun= dgenlog,
                              args = c(a = par_a, b = par_b, p = par_p, mu = par_mu),
-                             color="red", size = 1) +
+                             aes(colour="Theoretical\nDistribution Density"), size = 1) +
       ggplot2::labs(y = 'Density', x = 'X', 
-                    title = 'Theoretical density vs Observed histogram') +
-      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, face = 'bold'))
+                    title = 'Theoretical density vs Empirical density') +
+      scale_colour_manual("Densities", values = c("black", "red"))+
+      guides(fill=FALSE)+
+      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, face = 'bold', size = 18),
+                     legend.position = c(0.1, .9), legend.background = NULL,
+                     legend.title = element_text(size=10, face="bold"))   
     
   },
   
-  par_a = manipulate::slider(0,10, step = 0.01, initial = sqrt(2/pi), label = 'Parameter a'),
-  par_b = manipulate::slider(0,10, step = 0.01, initial = 0.5, label = 'Parameter b'),
-  par_p = manipulate::slider(0,10, step = 0.01, initial = 2, label = 'Parameter p'),
-  par_mu = manipulate::slider(ceiling(par_mu1 - loc_range),ceiling(par_mu1 + loc_range), step = 0.01, initial = par_mu1, label = 'mu parameter'),
+  par_a = manipulate::slider(0,10, step = 0.001, initial = sqrt(2/pi), label = 'Parameter a'),
+  par_b = manipulate::slider(0,10, step = 0.001, initial = 0.5, label = 'Parameter b'),
+  par_p = manipulate::slider(0,10, step = 0.001, initial = 2, label = 'Parameter p'),
+  par_mu = manipulate::slider(ceiling(par_mu1 - mu_range),ceiling(par_mu1 + mu_range), step = 0.01, initial = par_mu1, label = 'mu parameter'),
   binw = manipulate::slider(0.1,10, step = 0.1, initial = 0.1, label = 'Binwidth'),
   
   returnval = manipulate::button("Return parameters to variable")
@@ -120,20 +125,24 @@ if(skew == F){
         ggplot2::geom_histogram(binwidth = binw,
                                 colour = 'black', ggplot2::aes(y = ..density.., fill =..count..))+
         ggplot2::scale_fill_gradient("Count", low="#DCDCDC", high="#7C7C7C")+
-        ggplot2::stat_function(fun= dgenlog_as,
+        ggplot2::geom_density(aes(color = 'Data\nEmpirical Density'), size = 1)+
+        ggplot2::stat_function(fun= dgenlog_sk,
                                args = c(a = par_a, b = par_b, p = par_p, mu = par_mu, skew = par_skew),
-                               color="red", size = 1) +
+                               aes(colour="Theoretical\nDistribution Density"), size = 1) +
         ggplot2::labs(y = 'Density', x = 'X', 
-                      title = 'Theoretical density vs Observed histogram') +
-        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, face = 'bold'))
-      
+                      title = 'Theoretical density vs Empirical histogram') +
+        scale_colour_manual("Densities", values = c("black", "red"))+
+        guides(fill=FALSE)+
+        ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5, face = 'bold', size = 18),
+                       legend.position = c(0.1, .9), legend.background = NULL,
+                       legend.title = element_text(size=10, face="bold"))      
     },
     
-    par_a = manipulate::slider(0,10, step = 0.01, initial = sqrt(2/pi), label = 'Parameter a'),
-    par_b = manipulate::slider(0,10, step = 0.01, initial = 0.5, label = 'Parameter b'),
-    par_p = manipulate::slider(0,10, step = 0.01, initial = 2, label = 'Parameter p'),
-    par_mu = manipulate::slider(ceiling(par_mu1 - loc_range),ceiling(par_mu1 + loc_range), step = 0.01, initial = par_mu1, label = 'mu parameter'),
-    par_skew = manipulate::slider(-1,1, step = 0.01, initial = par_mu1, label = 'Skewness'),
+    par_a = manipulate::slider(0,10, step = 0.001, initial = sqrt(2/pi), label = 'Parameter a'),
+    par_b = manipulate::slider(0,10, step = 0.001, initial = 0.5, label = 'Parameter b'),
+    par_p = manipulate::slider(0,10, step = 0.001, initial = 2, label = 'Parameter p'),
+    par_mu = manipulate::slider(ceiling(par_mu1 - mu_range),ceiling(par_mu1 + mu_range), step = 0.01, initial = par_mu1, label = 'mu parameter'),
+    par_skew = manipulate::slider(-1,1, step = 0.001, initial = 0, label = 'Skewness'),
     binw = manipulate::slider(0.1,10, step = 0.1, initial = 0.1, label = 'Binwidth'),
     
     returnval = manipulate::button("Return parameters to variable")

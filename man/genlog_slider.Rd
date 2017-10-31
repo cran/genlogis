@@ -4,14 +4,14 @@
 \alias{genlog_slider}
 \title{Slider for generalized logistic}
 \usage{
-genlog_slider(data, return_var = NULL, loc_range = 10, skew = F)
+genlog_slider(data, return_var = NULL, mu_range = 10, skew = F)
 }
 \arguments{
 \item{data}{vector of data to compare.}
 
 \item{return_var}{a char string to name where parameters are assigned}
 
-\item{loc_range}{a number to setup the minimum and maximum range value of the mu parameter}
+\item{mu_range}{a number to setup the minimum and maximum range value of the mu parameter}
 
 \item{skew}{logical, if \code{TRUE}, a model with skewness should be used..}
 }
@@ -34,7 +34,7 @@ For \code{skew = T} the model used is
 The used distribution for is given by: 
 \deqn{f(x) = 2*((a + b*(1+p)*(abs(x-mu)^p))*exp(-(x-mu)*(a+b*(abs(x-mu)^p))))/ 
    ((exp(-(x-mu)*(a + b* (abs(x-mu)^p)))+1)^2) *
-   ((exp(-(skew*(x-mu))*(a+b*(abs(skew*(x-mu))^p)))+1)^(-1)) }#' for more information about the model (\code{help(dgenlog_as)})
+   ((exp(-(skew*(x-mu))*(a+b*(abs(skew*(x-mu))^p)))+1)^(-1)) }#' for more information about the model (\code{help(dgenlog_sk)})
 If the density function is not printed it is not defined for these parameters. \cr 
 
 \code{help(dgenlog)} for parameters restrictions.\cr 
